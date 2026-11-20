@@ -1,0 +1,32 @@
+{
+  "name": "presale-web",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "concurrently -k -n api,web -c blue,green \"npm:dev:api\" \"npm:dev:web\"",
+    "dev:api": "tsx watch backend/dev.ts",
+    "dev:web": "vite --config frontend/vite.config.ts",
+    "build": "vite build --config frontend/vite.config.ts",
+    "preview": "vite preview --config frontend/vite.config.ts",
+    "typecheck": "tsc --noEmit",
+    "check": "tsx scripts/check.ts",
+    "db:init": "tsx scripts/db-init.ts",
+    "new-page": "tsx scripts/new-page.ts"
+  },
+  "dependencies": {
+    "@hono/node-server": "^2.1.9",
+    "@libsql/client": "^0.18.0",
+    "hono": "^4.13.19"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "concurrently": "^10.0.7",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.8"
+  }
+}

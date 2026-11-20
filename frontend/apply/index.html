@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!--@head-->
+    <script type="module" src="/src/common.ts"></script>
+    <script type="module" src="/src/apply.ts"></script>
+  </head>
+  <body data-page="apply">
+    <a class="skip-link" href="#main">본문 바로가기</a>
+    <!--@header-->
+    <main id="main" class="page page--apply">
+      <div class="page-head">
+        <div class="container"><h1 class="page-head__title"><!--@title--></h1></div>
+      </div>
+      <!--@sections-->
+      <section class="section">
+        <div class="container container--narrow">
+          <p id="apply-loading">불러오는 중…</p>
+          <div id="apply-closed" class="notice" hidden></div>
+          <form id="apply-form" class="form" novalidate hidden>
+            <div id="apply-fields"></div>
+            <fieldset class="consent">
+              <legend>개인정보 수집·이용 동의</legend>
+              <div id="apply-consent-text" class="consent__text"></div>
+              <label class="consent__check">
+                <input type="checkbox" name="privacyAgree" />
+                <span id="apply-consent-label"></span>
+                <span class="req">(필수)</span>
+              </label>
+              <p class="field__error" data-error-for="privacyAgree"></p>
+            </fieldset>
+            <div class="hp" aria-hidden="true">
+              <label>비워 두세요 <input type="text" name="website" tabindex="-1" autocomplete="off" /></label>
+            </div>
+            <p id="apply-message" class="form__message" role="status" aria-live="polite"></p>
+            <button type="submit" class="btn btn--primary">신청하기</button>
+          </form>
+        </div>
+      </section>
+    </main>
+    <!--@footer-->
+  </body>
+</html>

@@ -1,0 +1,14 @@
+node_modules/
+frontend/dist/
+.vercel/
+
+# 환경변수(비밀값) — 저장소 제외
+.env
+.env.*
+!.env.example
+
+# 로컬 DB
+local.db
+local.db-*
+
+.DS_Store

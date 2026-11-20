@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!--@head-->
+    <script type="module" src="/src/admin.ts"></script>
+  </head>
+  <body data-page="admin" class="admin">
+    <main id="main" class="admin-main">
+      <header class="admin-bar">
+        <h1 class="admin-bar__title"><!--@title--></h1>
+        <button id="admin-logout" type="button" class="btn" hidden>로그아웃</button>
+      </header>
+
+      <p id="admin-loading">불러오는 중…</p>
+      <div id="admin-unconfigured" class="notice" hidden>
+        관리자 환경변수(ADMIN_PASSWORD, TOKEN_SECRET)가 설정되지 않아 로그인할 수 없습니다.
+      </div>
+
+      <form id="login-form" class="form admin-login" hidden>
+        <label class="field">
+          <span class="field__label">비밀번호</span>
+          <input type="password" name="password" autocomplete="current-password" required />
+        </label>
+        <p id="login-message" class="form__message" role="alert"></p>
+        <button type="submit" class="btn btn--primary">로그인</button>
+      </form>
+
+      <section id="admin-panel" hidden>
+        <form id="filter-form" class="admin-filter">
+          <input type="search" name="q" placeholder="성함·연락처·문의 검색" />
+          <select name="status"><option value="">전체 상태</option></select>
+          <label>기간 <input type="date" name="from" /></label>
+          <label>~ <input type="date" name="to" /></label>
+          <button type="submit" class="btn">검색</button>
+          <a id="export-csv" class="btn" href="/api/admin/export.csv">CSV 내려받기</a>
+        </form>
+        <p id="admin-summary" class="admin-summary"></p>
+        <div class="table-wrap">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>번호</th><th>신청일시</th><th>성함</th><th>연락처</th><th>문의사항</th><th>상태</th><th>삭제</th>
+              </tr>
+            </thead>
+            <tbody id="admin-rows"></tbody>
+          </table>
+        </div>
+        <nav id="admin-pager" class="admin-pager" aria-label="페이지"></nav>
+      </section>
+    </main>
+  </body>
+</html>
