@@ -21,8 +21,12 @@ export function pageHtml(key: string): string {
     <!--@header-->
     <main id="main" class="page page--${key}">
       <div class="page-head">
-        <div class="container"><h1 class="page-head__title"><!--@title--></h1></div>
+        <div class="container">
+          <p class="page-head__label"><!--@label--></p>
+          <h1 class="page-head__title"><!--@title--></h1>
+        </div>
       </div>
+      <!--@subnav-->
       <!--@sections-->
     </main>
     <!--@footer-->

@@ -15,6 +15,8 @@ export interface PageDef {
   path: string;
   /** 메뉴·문서 제목 */
   title: string;
+  /** 페이지 머리 영문 표기(선택) */
+  label?: string;
   /** 상단 메뉴 노출 여부 */
   nav: boolean;
   /** 검색엔진 비노출(관리자 등) */
@@ -27,10 +29,14 @@ export interface SiteConfig {
     name: string;
     description: string;
     lang: string;
+    /** 로고 이미지 경로(선택). 없으면 사이트명을 글자로 표시 */
+    logo?: string;
   };
   pages: PageDef[];
   contact: {
-    /** 대표번호. 비어 있으면 화면에 노출하지 않는다. */
+    /** 대표번호 앞 표기(예: "대표번호", "분양문의") */
+    label: string;
+    /** 대표번호. 비어 있으면 화면에 노출하지 않는다. 0 으로 시작할 때만 전화 걸기 링크가 된다. */
     phone: string;
   };
   footer: {

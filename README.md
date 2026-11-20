@@ -2,7 +2,7 @@
 
 Vite 멀티페이지(HTML/CSS/JS) + Hono API + Turso(libSQL). 배포는 Vercel(GitHub 푸시 시 자동 배포).
 
-> **구축 초안 상태**: 레이아웃·페이지 형식·필수 화면만 있고 콘텐츠는 비어 있습니다. 디자인·유형(템플릿)은 적용하지 않았습니다.
+> 카탈로그(PDF 14쪽)의 콘텐츠·이미지·디자인을 적용한 상태입니다. 본문은 `frontend/content/`, 이미지는 `frontend/public/images/` 에 있습니다. 확정이 필요한 항목은 [doc/미확인.md](doc/미확인.md).
 
 ## 로컬 실행
 

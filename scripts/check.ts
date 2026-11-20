@@ -5,7 +5,7 @@
  * 2. 설정(shared/config)의 페이지 ↔ frontend HTML 파일 짝
  * 3. 저장소 파일에 비밀값이 적혀 있지 않은지
  * 4. 환경변수 설정 여부(값은 출력하지 않음)
- * 5. 미확정 문구·빈 콘텐츠 현황
+ * 5. 미확정 문구·콘텐츠 작성 현황·콘텐츠 이미지 경로
  * 오류가 있으면 종료 코드 1.
  */
 import { execSync } from 'node:child_process';
@@ -35,7 +35,7 @@ function walk(dir: string, out: string[] = []): string[] {
 }
 
 // 1. 상대 import 확장자
-const tsFiles = ['api', 'backend', 'shared', 'scripts', 'frontend'].flatMap((d) => walk(d)).filter((f) => /\.(ts|mts)$/.test(f) && !f.endsWith('.d.ts'));
+const tsFiles = ['api', 'backend', 'shared', 'scripts', 'frontend'].flatMap((d) => walk(d)).filter((f) => !f.includes('/public/')).filter((f) => /\.(ts|mts)$/.test(f) && !f.endsWith('.d.ts'));
 const importRe = /(?:import|export)\s[^'"]*?from\s+['"](\.{1,2}\/[^'"]+)['"]|import\(\s*['"](\.{1,2}\/[^'"]+)['"]\s*\)|import\s+['"](\.{1,2}\/[^'"]+)['"]/g;
 for (const f of tsFiles) {
   const src = readFileSync(f, 'utf8');
@@ -71,7 +71,7 @@ for (const f of tracked) {
   if (f === 'local.db') errors.push('[secret] local.db 가 저장소에 포함됨');
 }
 const secretRe = /^(ADMIN_PASSWORD|TOKEN_SECRET|TURSO_AUTH_TOKEN|TURSO_DATABASE_URL)[ \t]*=[ \t]*\S/m;
-for (const f of tracked.filter((f) => existsSync(f) && !/\.(png|jpe?g|webp|pdf|db)$/.test(f) && !f.startsWith('node_modules'))) {
+for (const f of tracked.filter((f) => existsSync(f) && !/\.(png|jpe?g|webp|pdf|db)$/i.test(f) && !f.startsWith('node_modules'))) {
   if (secretRe.test(readFileSync(f, 'utf8'))) errors.push(`[secret] 비밀값으로 보이는 줄: ${f}`);
 }
 const gi = existsSync('.gitignore') ? readFileSync('.gitignore', 'utf8') : '';
@@ -89,8 +89,26 @@ for (const [k, v] of Object.entries(config.privacy)) {
   if (String(v).includes('[미확정]')) warns.push(`[privacy] 개인정보 문구 미확정: privacy.${k}`);
 }
 if (!config.contact.phone) warns.push('[content] 대표번호(contact.phone) 비어 있음');
-const slots = config.pages.reduce((n, p) => n + p.sections.length, 0);
-infos.push(`콘텐츠 자리(섹션) ${slots}개 — 모두 "콘텐츠 준비중"`);
+const slotFiles = new Set<string>();
+const empty: string[] = [];
+for (const p of config.pages) {
+  for (const s of p.sections) {
+    const f = join('frontend', 'content', p.key, `${s.id}.html`);
+    slotFiles.add(f);
+    if (!existsSync(f)) empty.push(`${p.key}.${s.id}`);
+  }
+}
+infos.push(`콘텐츠: 구획 ${slotFiles.size}개 중 ${slotFiles.size - empty.length}개 작성${empty.length ? ` — 준비중: ${empty.join(', ')}` : ''}`);
+for (const f of walk(join('frontend', 'content')).filter((f) => f.endsWith('.html'))) {
+  if (!slotFiles.has(f)) warns.push(`[content] 설정 구획과 연결되지 않은 콘텐츠 파일: ${f}`);
+}
+// 콘텐츠의 이미지 경로가 실제로 있는지
+for (const f of slotFiles) {
+  if (!existsSync(f)) continue;
+  for (const m of readFileSync(f, 'utf8').matchAll(/(?:src="|url\(')(\/images\/[^"')]+)/g)) {
+    if (!existsSync(join('frontend', 'public', m[1]))) errors.push(`[content] 없는 이미지: ${m[1]} (${f})`);
+  }
+}
 infos.push(`신청 마감 스위치: ${config.apply.closed ? '마감' : '접수중'}`);
 
 const rel = (s: string) => s.replace(process.cwd() + '/', '');

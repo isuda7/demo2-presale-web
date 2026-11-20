@@ -80,6 +80,7 @@ export const baseConfig: SiteConfig = {
     },
   ],
   contact: {
+    label: '대표번호',
     phone: '',
   },
   footer: {
