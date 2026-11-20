@@ -10,7 +10,10 @@
     <main id="main" class="admin-main">
       <header class="admin-bar">
         <h1 class="admin-bar__title"><!--@title--></h1>
-        <button id="admin-logout" type="button" class="btn" hidden>로그아웃</button>
+        <div class="admin-bar__actions">
+          <a id="admin-edit-site" class="btn btn--primary" href="/" hidden>사이트에서 편집하기</a>
+          <button id="admin-logout" type="button" class="btn" hidden>로그아웃</button>
+        </div>
       </header>
 
       <p id="admin-loading">불러오는 중…</p>

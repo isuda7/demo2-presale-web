@@ -282,3 +282,27 @@ h1, h2, h3 { line-height: 1.3; }
 .privacy-list dt { font-weight: 600; }
 .privacy-list dd { margin: 0; }
 .privacy-version { color: var(--c-muted); font-size: 0.875rem; }
+
+/* ── 관심고객 등록(카탈로그 표지 구성: 보라 패널 + 큰 문의번호) ───── */
+.apply-wrap { padding: 72px 0 96px; background: var(--c-bg-soft); }
+.apply-layout { display: grid; grid-template-columns: 5fr 7fr; gap: 0; align-items: stretch; }
+.apply-aside .section { height: 100%; padding: 0; border: 0; }
+.apply-intro { height: 100%; padding: 48px 40px; background: var(--c-purple); color: #fff; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.apply-intro__logo { width: 180px; margin-bottom: 24px; }
+.apply-intro__eyebrow { margin: 0 0 24px; font-family: var(--f-serif); font-size: 1.25rem; line-height: 1.5; letter-spacing: 0.28em; color: rgba(255, 255, 255, 0.45); }
+.apply-intro__sub { margin: 0; font-size: 0.875rem; opacity: 0.8; }
+.apply-intro__title { margin: 4px 0 20px; font-size: 1.625rem; font-weight: 700; }
+.apply-intro__text { margin: 0 0 32px; font-size: 0.9375rem; opacity: 0.85; }
+.apply-intro__tel { display: flex; align-items: center; gap: 12px; margin: 0; padding: 20px 0; border-top: 1px solid rgba(255, 255, 255, 0.3); border-bottom: 1px solid rgba(255, 255, 255, 0.3); }
+.apply-intro__tel span { font-size: 0.9375rem; line-height: 1.25; text-align: left; }
+.apply-intro__tel strong { font-family: var(--f-en); font-size: 2.75rem; font-weight: 600; line-height: 1; letter-spacing: 0.01em; }
+.apply-intro__credit { margin: 20px 0 0; font-size: 0.8125rem; opacity: 0.7; }
+.apply-card { padding: 48px 48px 40px; background: #fff; border-top: 4px solid var(--c-purple); box-shadow: 0 10px 30px rgba(34, 31, 31, 0.08); }
+.apply-card__title { margin: 0 0 24px; padding-bottom: 16px; border-bottom: 1px solid var(--c-line); font-size: 1.375rem; font-weight: 700; color: var(--c-charcoal); }
+.apply-card .btn--primary { width: 100%; padding: 16px; font-size: 1.0625rem; }
+@media (max-width: 860px) {
+  .apply-wrap { padding: 0 0 64px; }
+  .apply-layout { grid-template-columns: 1fr; padding: 0; }
+  .apply-intro { padding: 40px 24px; }
+  .apply-card { padding: 32px 16px; box-shadow: none; }
+}

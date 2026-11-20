@@ -34,6 +34,20 @@ const SCHEMA = [
   )`,
   `CREATE INDEX IF NOT EXISTS idx_applications_created_at ON applications(created_at)`,
   `CREATE INDEX IF NOT EXISTS idx_applications_status ON applications(status)`,
+  // 화면 편집 — 구획(페이지.구획) 단위 수정본. 없으면 빌드된 원본을 그대로 쓴다.
+  `CREATE TABLE IF NOT EXISTS content_overrides (
+    slot TEXT PRIMARY KEY,
+    html TEXT NOT NULL,
+    updated_at TEXT NOT NULL
+  )`,
+  // 화면 편집에서 올린 이미지
+  `CREATE TABLE IF NOT EXISTS assets (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    mime TEXT NOT NULL,
+    data BLOB NOT NULL,
+    size INTEGER NOT NULL,
+    created_at TEXT NOT NULL
+  )`,
 ];
 
 export async function migrate(c: Client): Promise<void> {

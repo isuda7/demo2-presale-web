@@ -15,15 +15,18 @@
     "typecheck": "tsc --noEmit",
     "check": "tsx scripts/check.ts",
     "db:init": "tsx scripts/db-init.ts",
-    "new-page": "tsx scripts/new-page.ts"
+    "new-page": "tsx scripts/new-page.ts",
+    "content:pull": "tsx scripts/content-pull.ts"
   },
   "dependencies": {
     "@hono/node-server": "^2.1.9",
     "@libsql/client": "^0.18.0",
-    "hono": "^4.13.19"
+    "hono": "^4.13.19",
+    "sanitize-html": "^2.18.2"
   },
   "devDependencies": {
     "@types/node": "^26.6.6",
+    "@types/sanitize-html": "^2.16.2",
     "concurrently": "^10.0.7",
     "tsx": "^4.23.15",
     "typescript": "^7.0.2",

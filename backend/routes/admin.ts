@@ -1,7 +1,17 @@
 import { Hono, type Context } from 'hono';
 import { config } from '../../shared/config/index.js';
-import { authConfigured, checkPassword, clearToken, isAuthed, issueToken, requireAdmin } from '../auth.js';
+import { authConfigured, checkPassword, clearToken, isAuthed, issueToken, requireAdmin, setUiHint } from '../auth.js';
 import { toCsv } from '../csv.js';
+import {
+  ASSET_MIME,
+  MAX_ASSET_BYTES,
+  MAX_HTML_BYTES,
+  deleteOverride,
+  isValidSlot,
+  sanitizeSection,
+  saveAsset,
+  saveOverride,
+} from '../content.js';
 import { allApplications, deleteApplication, listApplications, updateStatus, type ListFilter } from '../repo.js';
 
 export const adminRoutes = new Hono();
@@ -35,12 +45,19 @@ adminRoutes.post('/logout', (c) => {
   return c.json({ ok: true });
 });
 
-adminRoutes.get('/me', async (c) => c.json({ authed: await isAuthed(c), configured: authConfigured() }));
+adminRoutes.get('/me', async (c) => {
+  const authed = await isAuthed(c);
+  if (authed) setUiHint(c);
+  else clearToken(c); // 만료된 토큰·힌트 쿠키 정리
+  return c.json({ authed, configured: authConfigured() });
+});
 
 // ── 이하 로그인 필요 ──
 adminRoutes.use('/applications', requireAdmin);
 adminRoutes.use('/applications/*', requireAdmin);
 adminRoutes.use('/export.csv', requireAdmin);
+adminRoutes.use('/content/*', requireAdmin);
+adminRoutes.use('/assets', requireAdmin);
 
 adminRoutes.get('/applications', async (c) => {
   const page = Math.max(1, Number(c.req.query('page')) || 1);
@@ -72,4 +89,34 @@ adminRoutes.get('/export.csv', async (c) => {
   c.header('Content-Disposition', `attachment; filename="applications-${stamp}.csv"`);
   c.header('Cache-Control', 'no-store');
   return c.body(toCsv(rows));
+});
+
+// ── 화면 편집 ──
+adminRoutes.put('/content/:slot', async (c) => {
+  const slot = c.req.param('slot');
+  if (!isValidSlot(slot)) return c.json({ error: '없는 구획입니다.' }, 400);
+  const body = (await c.req.json().catch(() => ({}))) as { html?: unknown };
+  if (typeof body.html !== 'string' || body.html.trim() === '') return c.json({ error: '내용이 비어 있습니다.' }, 400);
+  if (new TextEncoder().encode(body.html).byteLength > MAX_HTML_BYTES) return c.json({ error: '내용이 너무 큽니다.' }, 413);
+  const html = sanitizeSection(body.html);
+  await saveOverride(slot, html);
+  return c.json({ ok: true, html });
+});
+
+/** 원래대로 — 수정본 삭제 */
+adminRoutes.delete('/content/:slot', async (c) => {
+  const slot = c.req.param('slot');
+  if (!isValidSlot(slot)) return c.json({ error: '없는 구획입니다.' }, 400);
+  await deleteOverride(slot);
+  return c.json({ ok: true });
+});
+
+adminRoutes.post('/assets', async (c) => {
+  const form = await c.req.formData().catch(() => null);
+  const file = form?.get('file');
+  if (!(file instanceof File)) return c.json({ error: '파일이 없습니다.' }, 400);
+  if (!ASSET_MIME.includes(file.type)) return c.json({ error: 'JPG·PNG·WEBP 이미지만 올릴 수 있습니다.' }, 415);
+  if (file.size > MAX_ASSET_BYTES) return c.json({ error: '이미지는 3MB 이하만 올릴 수 있습니다.' }, 413);
+  const id = await saveAsset(file.type, new Uint8Array(await file.arrayBuffer()));
+  return c.json({ ok: true, url: `/api/assets/${id}` }, 201);
 });

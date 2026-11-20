@@ -25,6 +25,7 @@ const filterForm = $<HTMLFormElement>('filter-form');
 const rowsEl = $('admin-rows');
 const logoutBtn = $<HTMLButtonElement>('admin-logout');
 const exportLink = $<HTMLAnchorElement>('export-csv');
+const editSiteLink = $<HTMLAnchorElement>('admin-edit-site');
 
 let page = 1;
 let statuses: string[] = [];
@@ -44,6 +45,7 @@ function filterQuery(): URLSearchParams {
 function showLogin(): void {
   panel.hidden = true;
   logoutBtn.hidden = true;
+  editSiteLink.hidden = true;
   loginForm.hidden = false;
 }
 
@@ -136,6 +138,7 @@ async function load(): Promise<void> {
   loginForm.hidden = true;
   panel.hidden = false;
   logoutBtn.hidden = false;
+  editSiteLink.hidden = false;
 }
 
 loginForm.addEventListener('submit', async (e) => {

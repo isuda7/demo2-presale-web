@@ -1,4 +1,5 @@
 import './styles/base.css';
+import { applyContent } from './content-loader.js';
 
 // 모바일 메뉴 열고 닫기
 const toggle = document.querySelector<HTMLButtonElement>('.site-header__toggle');
@@ -8,3 +9,5 @@ toggle?.addEventListener('click', () => {
   toggle.setAttribute('aria-expanded', String(!open));
   nav?.classList.toggle('is-open', !open);
 });
+
+void applyContent();

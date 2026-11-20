@@ -11,3 +11,4 @@
 .admin-table td:nth-child(5) { white-space: pre-wrap; max-width: 420px; }
 .admin-pager { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 12px; }
 .admin-pager [aria-current='page'] { font-weight: 700; background: var(--c-bg-soft); }
+.admin-bar__actions { display: flex; gap: 8px; }

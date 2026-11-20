@@ -109,7 +109,7 @@ export const site: { template: string | null; overrides: DeepPartial<SiteConfig>
         title: '관심고객 등록',
         label: 'Contact',
         nav: true,
-        sections: [],
+        sections: [{ id: 'intro', title: '등록 안내' }],
       },
       {
         key: 'privacy',

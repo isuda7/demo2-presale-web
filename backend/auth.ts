@@ -12,6 +12,11 @@ import { config } from '../shared/config/index.js';
  */
 const COOKIE = 'admin_token';
 const COOKIE_PATH = '/api/admin';
+/**
+ * 화면 편집기 표시용 힌트 쿠키(비밀값 아님, JS 에서 읽음). 이 쿠키가 있을 때만 화면이 편집기 코드를 불러온다.
+ * 실제 권한은 편집기가 /api/admin/me 로 다시 확인하고, 저장 API 는 admin_token 으로만 허용한다.
+ */
+const UI_COOKIE = 'admin_ui';
 
 export function authConfigured(): boolean {
   return Boolean(readEnv('ADMIN_PASSWORD') && readEnv('TOKEN_SECRET'));
@@ -39,10 +44,17 @@ export async function issueToken(c: Context): Promise<void> {
     path: COOKIE_PATH,
     maxAge: ttl,
   });
+  setUiHint(c, ttl);
+}
+
+/** 편집기 표시용 힌트 쿠키 설정(로그인 시, 그리고 로그인 상태 확인 시 다시 맞춤) */
+export function setUiHint(c: Context, ttl = config.admin.sessionHours * 3600): void {
+  setCookie(c, UI_COOKIE, '1', { secure: isProduction, sameSite: 'Strict', path: '/', maxAge: ttl });
 }
 
 export function clearToken(c: Context): void {
   deleteCookie(c, COOKIE, { path: COOKIE_PATH, secure: isProduction });
+  deleteCookie(c, UI_COOKIE, { path: '/', secure: isProduction });
 }
 
 export async function isAuthed(c: Context): Promise<boolean> {

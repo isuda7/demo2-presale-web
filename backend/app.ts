@@ -9,7 +9,8 @@ export const app = new Hono().basePath('/api');
 app.use('*', secureHeaders());
 app.use('*', async (c, next) => {
   await next();
-  c.header('Cache-Control', 'no-store');
+  // 라우트가 따로 정하지 않았으면 캐시하지 않음
+  if (!c.res.headers.has('Cache-Control')) c.header('Cache-Control', 'no-store');
 });
 
 app.route('/', publicRoutes);

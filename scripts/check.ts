@@ -6,6 +6,7 @@
  * 3. 저장소 파일에 비밀값이 적혀 있지 않은지
  * 4. 환경변수 설정 여부(값은 출력하지 않음)
  * 5. 미확정 문구·콘텐츠 작성 현황·콘텐츠 이미지 경로
+ * 6. (빌드 결과가 있으면) 방문자 HTML 에 편집기 코드가 들어가지 않았는지
  * 오류가 있으면 종료 코드 1.
  */
 import { execSync } from 'node:child_process';
@@ -110,6 +111,14 @@ for (const f of slotFiles) {
   }
 }
 infos.push(`신청 마감 스위치: ${config.apply.closed ? '마감' : '접수중'}`);
+
+// 6. 방문자 화면에 편집기가 섞이지 않았는지 — 편집기는 동적 import 로만 불러와야 한다
+if (existsSync(join('frontend', 'dist'))) {
+  for (const f of walk(join('frontend', 'dist')).filter((f) => f.endsWith('.html'))) {
+    if (/editor/i.test(readFileSync(f, 'utf8'))) errors.push(`[editor] 방문자 HTML 이 편집기 파일을 직접 불러옴: ${f}`);
+  }
+  infos.push('편집기 분리: 빌드 HTML 에서 편집기 직접 로드 없음 확인');
+}
 
 const rel = (s: string) => s.replace(process.cwd() + '/', '');
 for (const i of infos) console.log(`  · ${i}`);
